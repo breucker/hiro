@@ -4,10 +4,14 @@
 */
 //define collections
 Skills = new Meteor.Collection('skills');
+Sectors = new Meteor.Collection('sectors');
+Domains = new Meteor.Collection('domains');
+Disciplines = new Meteor.Collection('disciplines');
 
 if (Meteor.isClient) {
+
     Template.sheet.skills =  function(){
-       	return Skills.find({},{sort: {score: -1}}).fetch();
+       	return Skills.find({},{sort: {name: 1}}).fetch();
     };
     //sheet events
     Template.sheet.events({
@@ -20,25 +24,15 @@ if (Meteor.isClient) {
 
     //skill events
     Template.skill.events({
-    	// 'dblclick': function () {
-    	//  	console.log('skill'+this._id+' editing');
-   		//  },
    		 'dblclick' : function () {
    		 	$(domain).attr('value',this.domain);
         $(sector).attr('value',this.sector);
+        $(discipline).attr('value',this.sector);
         $(skill).attr('value',this.name);
         $(score).attr('value',parseInt(this.score));
         $(idSkill).attr('value',this._id);
    		 },
-   		 // 'mouseover' : function(){
-   		 // 	$(this).addClass('active');
-    	 // 	console.log(this._id+' - '+this.name+' hover');
-   		 // },
-   		 // 'mouseout' : function(){
-   		 // 	$(this).removeClass('active');
-    	 //  	console.log(this._id+' - '+this.name+' out');
-   		 // },
-   		 'click .scoreUp' : function(){
+   		 'click .scoreUp' : function(e){
    		 	Skills.update(this._id,{$inc: {score: 1}});
    		 },
    		 'click .scoreDown' : function(){
@@ -51,17 +45,27 @@ if (Meteor.isClient) {
 
   	});
 
-    Template.skillUpdate.domains = function(){
-      var domainList = ['"Art"', '"Drive"', '"Guns"'];
-      return domainList;
+    var dataSource = function(collection){
+      var source = collection.find({}).fetch();
+      //console.log(source);
+      var list = new Array();
+      source.forEach(function(item){
+        list.push('"'+item.name+'"');
+      });
+      return list;
     }
-    Template.skillUpdate.sectors = function(){
-      var domainList = ['"Art"', '"Drive"', '"Guns"'];
-      return domainList;
+
+    Template.skillUpdate.domains = function(){  
+     return dataSource(Domains);
     }
-    Template.skillUpdate.skills = function(){
-      var domainList = ['"Art"', '"Drive"', '"Guns"'];
-      return domainList;
+    Template.skillUpdate.sectors = function(){      
+      return dataSource(Sectors);
+    }
+    Template.skillUpdate.disciplines = function(){      
+      return dataSource(Disciplines);
+    }
+    Template.skillUpdate.skills = function(){      
+      return dataSource(Skills);
     }
 
     Template.skillUpdate.events({
@@ -69,14 +73,15 @@ if (Meteor.isClient) {
         e.preventDefault();
       },
       'click #addSkill' : function(){
-        Skills.insert({domain: domain.value, sector: sector.value, name: skill.value, score: parseInt(score.value)});
+        Skills.insert({domain: domain.value, sector: sector.value, discipline: discipline.value, name: skill.value, score: parseInt(score.value)});
         formSkill.reset();
         console.log("submit");
         console.log(formSkill);
+        $(domain).focus();
        },
       'click #updSkill' : function(){
         console.log("update"+idSkill.value);
-        Skills.update(idSkill.value,{$set: {domain: domain.value, sector: sector.value, name: skill.value, score: parseInt(score.value)}});
+        Skills.update(idSkill.value,{$set: {domain: domain.value, sector: sector.value,  discipline: discipline.value, name: skill.value, score: parseInt(score.value)}});
        },
     });
 }
@@ -84,11 +89,38 @@ if (Meteor.isClient) {
 //insert test datas
 if (Meteor.isServer) {
   Meteor.startup(function () {
-  	if(Skills.find({}).count()===0){
-	  	Skills.insert({domain:'Guns', sector:'Ray', name:'Laser', score: 8});
-	    Skills.insert({domain:'Drive', sector:'Vehicles', name:'Starship', score: 10});
+    if(Domains.find({}).count() === 0){
+      var source = ["Art", "Drive", "Guns"];
+
+      for(var i = 0 ; i < source.length ; i++)
+      {
+        Domains.insert({name: source[i]});
+      }
+    }
+    if(Sectors.find({}).count() === 0){
+      var source = ["Music", "Flying", "Pistol"];
+
+      for(var i = 0 ; i < source.length ; i++)
+      {
+        Sectors.insert({name: source[i]});
+      }
+    }
+    if(Disciplines.find({}).count() === 0){
+      var source = ["Percussions", "Vehicles", "Laser"];
+      for(var i = 0 ; i < source.length ; i++)
+      {
+        Disciplines.insert({name: source[i]});
+      }
+    }
+    if(Skills.find({}).count()===0){
+	  	Skills.insert({domain:'Guns', sector:'Ray',discipline:'Laser', name:'Pistol', score: 8});
+      Skills.insert({domain:'Drive', sector:'Vehicles', discipline:'Flying', name:'Starship', score: 10});
+      Skills.insert({domain:'Art', sector:'Music', discipline:'Percussions', name:'Drums', score: 10});
   	}
     
   });
+  console.log(Domains.find({}).fetch());
+  console.log(Sectors.find({}).fetch());
+  console.log(Disciplines.find({}).fetch());
   console.log(Skills.find({}).fetch());
 }

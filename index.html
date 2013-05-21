@@ -27,6 +27,7 @@
   		<tr>
   			<th>Domain</th>
   			<th>Sector</th>
+  			<th>Discipline</th>
   			<th>Skill</th>
   			<th>Score</th>
   		</tr>
@@ -43,7 +44,7 @@
 
 <template name="skill">
 	<tr>
-		<td>{{domain}}</td><td>{{sector}}</td><td>{{name}}</td>
+		<td>{{domain}}</td><td>{{sector}}</td><td>{{discipline}}</td><td>{{name}}</td>
 		<td>{{score}}
 			<div class='btn-group pull-right'>
 				<button class='btn btn-small scoreUp'><i class='icon-plus'></i></button>
@@ -59,6 +60,7 @@
 		<fieldset>
 			<input class="input-medium" type="text" placeholder="domain" name="domain" id="domain" value='{{domain}}' data-provide='typeahead' data-source='[{{domains}}]' />
 			<input class="input-medium" type="text" placeholder="sector" name="sector" id="sector" value='{{sector}}' data-provide='typeahead' data-source='[{{sectors}}]'/>
+			<input class="input-medium" type="text" placeholder="discipline" name="discipline" id="discipline" value='{{discipline}}' data-provide='typeahead' data-source='[{{disciplines}}]'/>
 			<input class="input-medium" type="text" placeholder="skill" name="skill" id="skill" value='{{skill}}' data-provide='typeahead' data-source='[{{skills}}]'/>
 			<input class="input-medium" type="text" placeholder="score" name="score" id="score" value='{{scores}}'/>
 			<input type="hidden" name="idSkill" id="idSkill" value='{{_id}}'/>

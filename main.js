@@ -8,13 +8,19 @@ Skills = new Meteor.Collection('skills');
 if (Meteor.isClient) {
 
     Template.sheet.skills =  function(){
-       	return Skills.find({},{sort: {name: 1}}).fetch();
+        keywords = new RegExp(Session.get("search_keywords"), "i");       
+        return Skills.find({$or:[{name:keywords},{sector:keywords},{discipline:keywords},{domain:keywords}]},{sort: {name: 1}}).fetch();
+        
     };
-    //sheet events
-    Template.sheet.events({
-    	// 'click #truncateSkills': function(){
-    	// 	Skills.remove({});
-    	// }
+    //nav events
+    Template.nav.events({
+    	 'submit #search': function(e){
+        e.preventDefault();
+        
+    	 },
+       'keyup [name=searchString]':function(e,context) {
+        Session.set("search_keywords", e.currentTarget.value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&"));
+      }
     });
 
     //skill events
@@ -40,8 +46,10 @@ if (Meteor.isClient) {
 
   	});
 
-    Template.skillUpdate.dataSource = function(fieldName){
+    /*Template.skillUpdate.dataSource = function(fieldName){
       console.log(fieldName);
+      console.log('element');
+      //console.log();
       var list = new Array();
       var source = _.pluck(Skills.find({}).fetch(),fieldName);
       console.log(source);
@@ -49,9 +57,32 @@ if (Meteor.isClient) {
       source.forEach(function(value){
          list.push('"'+value+'"');
       });
+      console.log(this.find('input'));
+      //this.find('input').typeahead();
       return list;
-    }
-
+    }*/
+  //   Template.myform.rendered = function () {
+  // return Meteor.defer(function () {
+  //   return $('.item-select').typeahead({
+  //     source: items
+    Template.skillUpdate.rendered = function(){
+      return Meteor.defer(function(){
+          var fields = ['domain','sector','discipline'];
+          _.each(fields, function(fieldName){
+              $('#'+fieldName).typeahead({
+                source: function(){ 
+                  return _.pluck(Skills.find({}).fetch(),fieldName);
+                }
+              });
+          });
+          $('#skill').typeahead({
+            source: function(){ 
+              return _.pluck(Skills.find({}).fetch(),'name');
+            }
+          });
+          return;
+      });
+    };
     var upsert = function(collection, selector, document, idTypeahead)
     {
       //console.log(collection.find(selector).fetch());
@@ -60,10 +91,12 @@ if (Meteor.isClient) {
         collection.insert(document);
       }
     }
+
     Template.skillUpdate.events({
       'submit': function(e){
         e.preventDefault();
       },
+      
       'click #addSkill' : function(){
         Skills.insert({domain: domain.value, sector: sector.value, discipline: discipline.value, name: skill.value, score: parseInt(score.value)});
         

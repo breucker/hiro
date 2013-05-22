@@ -8,38 +8,52 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 </head>
 <body>
-	<div class="nav">
-		<h1>hiro character sheet editor - welcome</h1>
-		<p class="small mutted">Double-click to edit a skill</p>
+	{{> nav}}
+	<div class="span12">
+	  {{> sheet}}
 	</div>
-<div class="span12">
-  {{> sheet}}
-</div>
 </body>
 
+<template name="nav">
+	<div class="navbar">
+  		<div class="navbar-inner">
+    		<a class="brand" href="#">hiro - character sheet editor</a>
+    		<form class="navbar-search pull-right" id="search">
+	  		<input type="text" class="search-query" placeholder="Search" id='searchString' name='searchString'>
+		</form>
+  		</div>
+	</div>
+	<div class="span8">
+		<h1>Welcome to hiro !</h1>
+		<div class="alert alert-info">Double-click to edit a skill</p>
+	</div>
+	
+</template>
 <template name="sheet">
+	
+	
 	<div id="frmSkill">
 		{{> skillUpdate}}
 	</div>
-  <table class="table table-hover table-bordered" id="skillsTable">
+	 <table class="table table-hover table-bordered" id="skillsTable">
 		<caption>You have {{skills.length}} skills.</caption>
-  	<thead>
-  		<tr>
-  			<th>Domain</th>
-  			<th>Sector</th>
-  			<th>Discipline</th>
-  			<th>Skill</th>
-  			<th>Score</th>
-  		</tr>
-  	</thead>
-  	{{#if skills}}
-	<tbody>
-		{{#each skills}}
-			{{> skill}}
-		{{/each}}
-	</tbody>
-	{{/if}}
-  </table>
+	  	<thead>
+	  		<tr>
+	  			<th>Domain</th>
+	  			<th>Sector</th>
+	  			<th>Discipline</th>
+	  			<th>Skill</th>
+	  			<th>Score</th>
+	  		</tr>
+	  	</thead>
+	  	{{#if skills}}
+		<tbody>
+			{{#each skills}}
+				{{> skill}}
+			{{/each}}
+		</tbody>
+		{{/if}}
+	</table>
 </template>
 
 <template name="skill">

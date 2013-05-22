@@ -12,7 +12,7 @@
 		<h1>hiro character sheet editor - welcome</h1>
 		<p class="small mutted">Double-click to edit a skill</p>
 	</div>
-<div class="span10">
+<div class="span12">
   {{> sheet}}
 </div>
 </body>
@@ -58,10 +58,10 @@
 <template name="skillUpdate">
 	<form id="formSkill" class="form-inline">
 		<fieldset>
-			<input class="input-medium" type="text" placeholder="domain" name="domain" id="domain" value='{{domain}}' data-provide='typeahead' data-source='[{{domains}}]' />
-			<input class="input-medium" type="text" placeholder="sector" name="sector" id="sector" value='{{sector}}' data-provide='typeahead' data-source='[{{sectors}}]'/>
-			<input class="input-medium" type="text" placeholder="discipline" name="discipline" id="discipline" value='{{discipline}}' data-provide='typeahead' data-source='[{{disciplines}}]'/>
-			<input class="input-medium" type="text" placeholder="skill" name="skill" id="skill" value='{{skill}}' data-provide='typeahead' data-source='[{{skills}}]'/>
+			<input class="input-medium" type="text" placeholder="domain" name="domain" id="domain" value='{{domain}}' data-provide='typeahead' data-source='[{{dataSource "domain"}}]' />
+			<input class="input-medium" type="text" placeholder="sector" name="sector" id="sector" value='{{sector}}' data-provide='typeahead' data-source='[{{dataSource "sector"}}]'/>
+			<input class="input-medium" type="text" placeholder="discipline" name="discipline" id="discipline" value='{{discipline}}' data-provide='typeahead' data-source='[{{dataSource "discipline"}}]'/>
+			<input class="input-medium" type="text" placeholder="skill" name="skill" id="skill" value='{{skill}}' data-provide='typeahead' data-source='[{{dataSource "name"}}]'/>
 			<input class="input-medium" type="text" placeholder="score" name="score" id="score" value='{{scores}}'/>
 			<input type="hidden" name="idSkill" id="idSkill" value='{{_id}}'/>
 			<div class='btn-group'>

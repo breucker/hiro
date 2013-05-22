@@ -4,9 +4,6 @@
 */
 //define collections
 Skills = new Meteor.Collection('skills');
-Sectors = new Meteor.Collection('sectors');
-Domains = new Meteor.Collection('domains');
-Disciplines = new Meteor.Collection('disciplines');
 
 if (Meteor.isClient) {
 
@@ -15,8 +12,6 @@ if (Meteor.isClient) {
     };
     //sheet events
     Template.sheet.events({
-    	
-    	
     	// 'click #truncateSkills': function(){
     	// 	Skills.remove({});
     	// }
@@ -45,35 +40,34 @@ if (Meteor.isClient) {
 
   	});
 
-    var dataSource = function(collection){
-      var source = collection.find({}).fetch();
-      //console.log(source);
+    Template.skillUpdate.dataSource = function(fieldName){
+      console.log(fieldName);
       var list = new Array();
-      source.forEach(function(item){
-        list.push('"'+item.name+'"');
+      var source = _.pluck(Skills.find({}).fetch(),fieldName);
+      console.log(source);
+      var source = _.uniq(source);
+      source.forEach(function(value){
+         list.push('"'+value+'"');
       });
       return list;
     }
 
-    Template.skillUpdate.domains = function(){  
-     return dataSource(Domains);
+    var upsert = function(collection, selector, document, idTypeahead)
+    {
+      //console.log(collection.find(selector).fetch());
+      if(collection.find(selector).count()==0)
+      {
+        collection.insert(document);
+      }
     }
-    Template.skillUpdate.sectors = function(){      
-      return dataSource(Sectors);
-    }
-    Template.skillUpdate.disciplines = function(){      
-      return dataSource(Disciplines);
-    }
-    Template.skillUpdate.skills = function(){      
-      return dataSource(Skills);
-    }
-
     Template.skillUpdate.events({
       'submit': function(e){
         e.preventDefault();
       },
       'click #addSkill' : function(){
         Skills.insert({domain: domain.value, sector: sector.value, discipline: discipline.value, name: skill.value, score: parseInt(score.value)});
+        
+
         formSkill.reset();
         console.log("submit");
         console.log(formSkill);
@@ -89,29 +83,6 @@ if (Meteor.isClient) {
 //insert test datas
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    if(Domains.find({}).count() === 0){
-      var source = ["Art", "Drive", "Guns"];
-
-      for(var i = 0 ; i < source.length ; i++)
-      {
-        Domains.insert({name: source[i]});
-      }
-    }
-    if(Sectors.find({}).count() === 0){
-      var source = ["Music", "Flying", "Pistol"];
-
-      for(var i = 0 ; i < source.length ; i++)
-      {
-        Sectors.insert({name: source[i]});
-      }
-    }
-    if(Disciplines.find({}).count() === 0){
-      var source = ["Percussions", "Vehicles", "Laser"];
-      for(var i = 0 ; i < source.length ; i++)
-      {
-        Disciplines.insert({name: source[i]});
-      }
-    }
     if(Skills.find({}).count()===0){
 	  	Skills.insert({domain:'Guns', sector:'Ray',discipline:'Laser', name:'Pistol', score: 8});
       Skills.insert({domain:'Drive', sector:'Vehicles', discipline:'Flying', name:'Starship', score: 10});
@@ -119,8 +90,6 @@ if (Meteor.isServer) {
   	}
     
   });
-  console.log(Domains.find({}).fetch());
-  console.log(Sectors.find({}).fetch());
-  console.log(Disciplines.find({}).fetch());
+  
   console.log(Skills.find({}).fetch());
 }
